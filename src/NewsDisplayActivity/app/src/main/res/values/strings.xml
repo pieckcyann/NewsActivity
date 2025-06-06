@@ -1,5 +1,0 @@
-<resources>
-    <string name="app_name">NewsDisplayActivity</string>
-    <string name="top_bar_title">资讯动态</string>
-    <string name="top_bar_find">点击搜索</string>
-</resources>
