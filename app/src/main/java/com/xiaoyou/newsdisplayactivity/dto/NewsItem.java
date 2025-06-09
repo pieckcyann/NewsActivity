@@ -2,6 +2,9 @@ package com.xiaoyou.newsdisplayactivity.dto;
 
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class NewsItem {
     private String uniquekey;
     private String title;
@@ -30,6 +33,20 @@ public class NewsItem {
         this.thumbnail_pic_s02 = newsJson.optString("thumbnail_pic_s02");
         this.thumbnail_pic_s03 = newsJson.optString("thumbnail_pic_s03");
         this.is_content = newsJson.optString("is_content");
+    }
+
+    public List<String> getImageList() {
+        List<String> imageList = new ArrayList<>();
+        if (thumbnail_pic_s != null && !thumbnail_pic_s.isEmpty()) {
+            imageList.add(thumbnail_pic_s);
+        }
+        if (thumbnail_pic_s02 != null && !thumbnail_pic_s02.isEmpty()) {
+            imageList.add(thumbnail_pic_s02);
+        }
+        if (thumbnail_pic_s03 != null && !thumbnail_pic_s03.isEmpty()) {
+            imageList.add(thumbnail_pic_s03);
+        }
+        return imageList;
     }
 
     // 提供必要的 getter 方法

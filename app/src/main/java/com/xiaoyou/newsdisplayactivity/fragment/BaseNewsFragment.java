@@ -97,7 +97,7 @@ public class BaseNewsFragment extends Fragment {
             List<NewsItem> latestNews = JsonUtils.parseNewsJsonByLocal(getContext(), newsType + "_2025_06_06.json", 0, currentPage + pageStap);
 
             requireActivity().runOnUiThread(() -> {
-                if (latestNews != null && !latestNews.isEmpty()) {
+                if (!latestNews.isEmpty()) {
                     newsList.clear();  // 清空现有数据
                     newsList.addAll(latestNews);  // 添加最新的新闻数据
                     adapter.notifyDataSetChanged();
@@ -115,7 +115,7 @@ public class BaseNewsFragment extends Fragment {
             List<NewsItem> moreNews = JsonUtils.parseNewsJsonByLocal(getContext(), newsType + "_2025_06_06.json", currentPage += 3, pageStap);
 
             requireActivity().runOnUiThread(() -> {
-                if (moreNews != null && !moreNews.isEmpty()) {
+                if (!moreNews.isEmpty()) {
                     newsList.addAll(moreNews);  // 追加数据到已有列表
                     adapter.notifyDataSetChanged();
                     Toast.makeText(getContext(), "加载成功！", Toast.LENGTH_SHORT).show();

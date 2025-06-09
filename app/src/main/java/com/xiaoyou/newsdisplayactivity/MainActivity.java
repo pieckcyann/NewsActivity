@@ -76,14 +76,15 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // 使用中介 TabLayoutMediator 连接 TabLayout 和 ViewPager2
-        // 中介会子推动同步 ViewPager2 的位置与选中的 TabLayout 项
+        // 中介会自动同步 ViewPager2 的位置与选中的 TabLayout 项
         new TabLayoutMediator(tabLayout, viewPager,
-                (tab, position) -> tab.setText(myTabs.get(position))
+                (tab, position) -> tab.setText(myTabs.get(position)) // 根据 position 设置 tab 的文字
         ).attach();
+
 
     }
 
-    // 工厂方法 动态创建 Fragment 列表
+    // 工厂方法 - 动态创建 Fragment 列表
     private List<Fragment> generateFragments() {
         List<Fragment> fragments = new LinkedList<>();
         for (String tab : myTabs) {

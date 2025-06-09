@@ -35,87 +35,79 @@
         app:layout_constraintTop_toTopOf="@+id/news_title"
         app:layout_constraintWidth_percent="0.3" />
 
-    <!--  多图  -->
-    <FrameLayout
-        android:id="@+id/multi_image_container"
+    <!-- 双图 -->
+    <LinearLayout
+        android:id="@+id/two_image_container"
         android:layout_width="0dp"
         android:layout_height="@dimen/news_multi_image_height"
+
+        android:layout_marginTop="@dimen/part_gap"
+        android:orientation="horizontal"
         android:visibility="gone"
+
+        app:layout_constraintBottom_toTopOf="@+id/tree_image_container"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/news_title">
+        app:layout_constraintTop_toBottomOf="@+id/news_title">
 
-        <!-- 双图 -->
-        <LinearLayout
-            android:id="@+id/two_image_container"
-            android:layout_width="match_parent"
+        <ImageView
+            android:id="@+id/two_image1"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
+            android:layout_marginEnd="@dimen/news_image_gap"
+            android:layout_weight="1"
+            android:scaleType="centerCrop"
+            android:visibility="gone" />
 
-            android:layout_marginTop="@dimen/part_gap"
-            android:orientation="horizontal"
-            android:visibility="gone"
-
-            app:layout_constraintBottom_toTopOf="@+id/news_info"
-            app:layout_constraintEnd_toStartOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/news_title">
-
-            <ImageView
-                android:id="@+id/two_image1"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_marginEnd="@dimen/news_image_gap"
-                android:layout_weight="1"
-                android:scaleType="centerCrop" />
-
-            <ImageView
-                android:id="@+id/two_image2"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:scaleType="centerCrop" />
-        </LinearLayout>
-
-        <!-- 三图 -->
-        <LinearLayout
-            android:id="@+id/tree_image_container"
-            android:layout_width="match_parent"
+        <ImageView
+            android:id="@+id/two_image2"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_marginTop="@dimen/part_gap"
-            android:orientation="horizontal"
-            android:visibility="gone"
+            android:layout_weight="1"
+            android:scaleType="centerCrop"
+            android:visibility="gone" />
+    </LinearLayout>
 
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/news_title">
+    <!-- 三图 -->
+    <LinearLayout
+        android:id="@+id/tree_image_container"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/news_multi_image_height"
+        android:layout_marginTop="@dimen/part_gap"
+        android:orientation="horizontal"
+        android:visibility="gone"
 
-            <ImageView
-                android:id="@+id/tree_image1"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_marginEnd="@dimen/news_image_gap"
-                android:layout_weight="1"
-                android:scaleType="centerCrop" />
+        app:layout_constraintBottom_toTopOf="@id/news_info"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/two_image_container">
 
-            <ImageView
-                android:id="@+id/tree_image2"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_marginEnd="@dimen/news_image_gap"
-                android:layout_weight="1"
-                android:scaleType="centerCrop" />
+        <ImageView
+            android:id="@+id/tree_image1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="@dimen/news_image_gap"
+            android:layout_weight="1"
+            android:scaleType="centerCrop"
+            android:visibility="gone" />
 
-            <ImageView
-                android:id="@+id/tree_image3"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:scaleType="centerCrop" />
-        </LinearLayout>
+        <ImageView
+            android:id="@+id/tree_image2"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="@dimen/news_image_gap"
+            android:layout_weight="1"
+            android:scaleType="centerCrop"
+            android:visibility="gone" />
 
-    </FrameLayout>
-
+        <ImageView
+            android:id="@+id/tree_image3"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:scaleType="centerCrop"
+            android:visibility="gone" />
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/news_info"
@@ -125,7 +117,7 @@
         android:orientation="horizontal"
         app:layout_constraintEnd_toStartOf="@id/one_image1"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/multi_image_container"
+        app:layout_constraintTop_toBottomOf="@id/tree_image_container"
         app:layout_goneMarginEnd="0dp">
 
         <TextView
