@@ -1,4 +1,4 @@
-package com.xiaoyou.newsdisplayactivity.bean;
+package com.xiaoyou.newsdisplayactivity.dto;
 
 import java.util.List;
 

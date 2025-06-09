@@ -13,7 +13,8 @@
         android:id="@+id/top_bar_selection"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:layout_margin="3dp"
+        android:layout_margin="@dimen/main_margin_size"
+        android:background="@color/white"
         app:layout_constraintTop_toTopOf="parent">
 
         <androidx.cardview.widget.CardView
@@ -27,15 +28,16 @@
 
             <com.google.android.material.tabs.TabLayout
                 android:id="@+id/tab_layout"
-                android:layout_width="280dp"
+                android:layout_width="340dp"
                 android:layout_height="match_parent"
-                app:tabBackground="@color/white"
+                android:background="@color/white"
+                android:contentDescription="选项栏"
+                app:tabGravity="fill"
                 app:tabIndicatorColor="@color/color_selected"
                 app:tabMode="scrollable"
                 app:tabSelectedTextColor="@color/color_selected"
                 app:tabTextAppearance="@style/TabLayoutTextStyle"
-                app:tabTextColor="@color/color_unselected"
-                tools:ignore="SpeakableTextPresentCheck" />
+                app:tabTextColor="@color/color_unselected" />
 
             <ImageButton
                 android:id="@+id/btn_more_tags"
@@ -45,7 +47,6 @@
                 android:background="@color/white"
                 android:contentDescription="点击切换标签"
                 android:src="@drawable/tab_item_more" />
-
 
         </androidx.cardview.widget.CardView>
 
@@ -67,7 +68,7 @@
         android:id="@+id/news_selection"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_margin="3dp"
+        android:layout_margin="@dimen/main_margin_size"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/top_bar_selection">
 
@@ -84,6 +85,7 @@
                 android:id="@+id/info_viewpager2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:padding="10dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="parent" />

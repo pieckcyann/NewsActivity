@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 import com.xiaoyou.newsdisplayactivity.R;
-import com.xiaoyou.newsdisplayactivity.bean.NewsItem;
+import com.xiaoyou.newsdisplayactivity.dto.NewsItem;
 import com.xiaoyou.newsdisplayactivity.recyclerview.RecyclerViewAdapter;
 import com.xiaoyou.newsdisplayactivity.utils.JsonUtils;
 
@@ -24,42 +24,59 @@ public class BaseNewsFragment extends Fragment {
 
     private String newsType;
     private RecyclerView recyclerView;
-    private RecyclerViewAdapter adapter;
+    private RecyclerViewAdapter adapter; // 接收返回的适配器，用于之后更新列表视图
     private List<NewsItem> newsList;
     private SmartRefreshLayout smartRefreshLayout;
 
     public BaseNewsFragment() {
-        super(R.layout.fragment_common); // 所有页面都用一个通用布局
+        super(R.layout.fragment_common); // 通用布局
     }
 
+    // 创建新实例
     public static BaseNewsFragment newInstance(String type) {
         BaseNewsFragment fragment = new BaseNewsFragment();
+
         Bundle args = new Bundle();
         args.putString(ARG_NEWS_TYPE, type);
         fragment.setArguments(args);
-        return fragment;
+
+        return fragment; // 返回带参数的 fragment 实例
     }
+
 
     @SuppressLint("NotifyDataSetChanged")
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // 获取新闻类型参数
+        // 获取传入的类型参数
         if (getArguments() != null) {
-            newsType = getArguments().getString(ARG_NEWS_TYPE, "top");
+            newsType = getArguments().getString(ARG_NEWS_TYPE, "top"); // 获取 setArguments 值
         }
 
         recyclerView = view.findViewById(R.id.fragment_recycler_view_common);
         smartRefreshLayout = view.findViewById(R.id.fragment_smart_refresh_layout_common);
 
-        // 获取数据
-        newsList = JsonUtils.parseNewsJsonByRequest(newsType);
+        new Thread(() -> {
+            List<NewsItem> latestNews = JsonUtils.parseNewsJsonByRequest(newsType);
 
-        adapter = new RecyclerViewAdapter(newsList, getContext());
-        recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+            requireActivity().runOnUiThread(() -> {
+                if (latestNews != null && !latestNews.isEmpty()) {
+                    newsList = latestNews;
 
+                    // 设置 RecyclerView 适配器
+                    adapter = new RecyclerViewAdapter(newsList, getContext());
+                    recyclerView.setAdapter(adapter);
+                    // 设置 RecyclerView 管理器
+                    recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+                } else {
+                    Toast.makeText(getContext(), "加载失败", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }).start();
+
+        // 下拉刷新 监听器
         smartRefreshLayout.setOnRefreshListener(refreshLayout -> {
             new Thread(() -> {
                 List<NewsItem> latest = JsonUtils.parseNewsJsonByRequest(newsType);
@@ -68,15 +85,16 @@ public class BaseNewsFragment extends Fragment {
                         newsList.clear();
                         newsList.addAll(latest);
                         adapter.notifyDataSetChanged();
-                        Toast.makeText(getContext(), "刷新成功", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), "刷新成功！", Toast.LENGTH_SHORT).show();
                     } else {
-                        Toast.makeText(getContext(), "刷新失败", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), "刷新失败。。。", Toast.LENGTH_SHORT).show();
                     }
                     refreshLayout.finishRefresh(true);
                 });
             }).start();
         });
 
+        // 上拉加载 监听器
         smartRefreshLayout.setOnLoadMoreListener(refreshLayout -> {
             refreshLayout.getLayout().postDelayed(() -> {
                 refreshLayout.finishLoadMore();

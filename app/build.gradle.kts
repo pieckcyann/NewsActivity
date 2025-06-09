@@ -55,8 +55,8 @@ dependencies {
     implementation(libs.appcompat.v170)
     implementation(libs.material.v1120)
 
-    // Gson
-    implementation(libs.gson)
+    // // Gson
+    // implementation(libs.gson)
 
     // RecyclerView
     implementation(libs.recyclerview)
@@ -72,6 +72,10 @@ dependencies {
 
     // CardView
     implementation(libs.cardview)
+
+    // // OkHttp
+    // implementation("com.squareup.okhttp3:okhttp:4.12.0")
+
 
     // 下拉刷新，上拉加载更多
     // https://github.com/scwang90/SmartRefreshLayout

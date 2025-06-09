@@ -9,7 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.xiaoyou.newsdisplayactivity.R;
-import com.xiaoyou.newsdisplayactivity.bean.NewsItem;
+import com.xiaoyou.newsdisplayactivity.dto.NewsItem;
 
 import java.util.List;
 
@@ -25,7 +25,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewHolder
     @NonNull
     @Override
     public RecyclerViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-//        View view = View.inflate(this.context, R.layout.item_news_text, null);
+        // View view = View.inflate(this.context, R.layout.item_news_text, null);
 
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_news_text, parent, false);
@@ -33,6 +33,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewHolder
         return new RecyclerViewHolder(view);
     }
 
+    // 注意，多次滑动时会重复调用此方法
     @Override
     public void onBindViewHolder(@NonNull RecyclerViewHolder holder, int position) {
         NewsItem news = this.mNewsList.get(position);

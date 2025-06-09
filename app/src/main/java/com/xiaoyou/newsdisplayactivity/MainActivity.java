@@ -2,7 +2,6 @@ package com.xiaoyou.newsdisplayactivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.ImageButton;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,15 +11,9 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
-import com.xiaoyou.newsdisplayactivity.fragment.GuoJiFragment;
-import com.xiaoyou.newsdisplayactivity.fragment.GuoNeiFragment;
-import com.xiaoyou.newsdisplayactivity.fragment.JunShiFragment;
-import com.xiaoyou.newsdisplayactivity.fragment.KeJiFragment;
-import com.xiaoyou.newsdisplayactivity.fragment.TiYuFragment;
-import com.xiaoyou.newsdisplayactivity.fragment.TopFragment;
-import com.xiaoyou.newsdisplayactivity.fragment.YuLeFragment;
+import com.xiaoyou.newsdisplayactivity.fragment.BaseNewsFragment;
 
-import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 // public class MainActivity extends AppCompatActivity {
@@ -39,36 +32,36 @@ import java.util.List;
 //}
 
 public class MainActivity extends AppCompatActivity {
-
-    // Fragment 列表
-    private final List<Fragment> fragmentList = Arrays.asList(
-            new TopFragment(),
-            new GuoNeiFragment(),
-            new GuoJiFragment(),
-            new YuLeFragment(),
-            new TiYuFragment(),
-            new JunShiFragment(),
-            new KeJiFragment()
-    );
     // 标题内容列表
-    private final List<String> tabTitles = Arrays.asList("头条", "国内", "国际", "娱乐", "体育", "军事", "科技");
+    LinkedList<String> myTabs;
     TabLayout tabLayout;
     ViewPager2 viewPager;
-    ImageButton moreTagButton;
+    // 动态地创建 Fragment 列表
+    private List<Fragment> fragmentList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // Toast.makeText(this, "xxxxxxxxxxxxxxx", Toast.LENGTH_SHORT).show();
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        TabLayout tabLayout = findViewById(R.id.tab_layout);
-        ViewPager2 viewPager = findViewById(R.id.info_viewpager2);
+        tabLayout = findViewById(R.id.tab_layout);
+        viewPager = findViewById(R.id.info_viewpager2);
 
+        // 从全局状态中获取标题文本列表
+        myTabs = ((NewsApp) getApplicationContext()).getMyTabsState();
+
+        // 动态地创建 Fragment 列表
+        fragmentList = generateFragments();
+
+        // 点击切换活动
         findViewById(R.id.btn_more_tags).setOnClickListener(v -> {
             Intent intent = new Intent(this, MoreTabsActivity.class);
             startActivity(intent);
         });
 
+        // 添加 ViewPager 适配器
         viewPager.setAdapter(new FragmentStateAdapter(this) {
             @NonNull
             @Override
@@ -83,11 +76,41 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // 使用中介 TabLayoutMediator 连接 TabLayout 和 ViewPager2
-        // 中介会同步 ViewPager2 的位置与选中的 TabLayout 项
+        // 中介会子推动同步 ViewPager2 的位置与选中的 TabLayout 项
         new TabLayoutMediator(tabLayout, viewPager,
-                (tab, position) -> tab.setText(tabTitles.get(position))
+                (tab, position) -> tab.setText(myTabs.get(position))
         ).attach();
 
+    }
+
+    // 工厂方法 动态创建 Fragment 列表
+    private List<Fragment> generateFragments() {
+        List<Fragment> fragments = new LinkedList<>();
+        for (String tab : myTabs) {
+            fragments.add(createFragmentForTab(tab));
+        }
+        return fragments;
+    }
+
+    private Fragment createFragmentForTab(String tabName) {
+        switch (tabName) {
+            case "头条":
+                return BaseNewsFragment.newInstance("top");
+            case "国内":
+                return BaseNewsFragment.newInstance("guonei");
+            case "国际":
+                return BaseNewsFragment.newInstance("guoji");
+            case "娱乐":
+                return BaseNewsFragment.newInstance("yule");
+            case "体育":
+                return BaseNewsFragment.newInstance("tiyu");
+            case "军事":
+                return BaseNewsFragment.newInstance("junshi");
+            case "科技":
+                return BaseNewsFragment.newInstance("keji");
+            default:
+                return new Fragment(); // 空白 fragment
+        }
     }
 
 }

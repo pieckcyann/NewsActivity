@@ -1,5 +1,6 @@
 package com.xiaoyou.newsdisplayactivity.fragment;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
@@ -12,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 import com.xiaoyou.newsdisplayactivity.R;
-import com.xiaoyou.newsdisplayactivity.bean.NewsItem;
+import com.xiaoyou.newsdisplayactivity.dto.NewsItem;
 import com.xiaoyou.newsdisplayactivity.recyclerview.RecyclerViewAdapter;
 import com.xiaoyou.newsdisplayactivity.utils.JsonUtils;
 
@@ -30,13 +31,16 @@ public class TopFragment extends Fragment {
     }
 
     // 绘制完成时
+    @SuppressLint("NotifyDataSetChanged")
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // topRecyclerView = view.findViewById(R.id.fragment_top).findViewById(R.id.recyclear_view_include);
         topRecyclerView = view.findViewById(R.id.fragment_top);
-        topNewsList = JsonUtils.parseNewsJson(getContext(), "top_2025_06_03.json");
+
+        // 请求获取数据
+        // topNewsList = JsonUtils.parseNewsJsonByLocal(getContext(), "top_2025_06_04.json");
+        topNewsList = JsonUtils.parseNewsJsonByRequest("top");
 
         // 添加 RecyclerView Adapter
         topMyAdapter = new RecyclerViewAdapter(topNewsList, getContext());
@@ -46,13 +50,55 @@ public class TopFragment extends Fragment {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         topRecyclerView.setLayoutManager(layoutManager);
 
-        // 设置下拉刷新与上拉加载
+        // 设置 下拉刷新 与 上拉加载 组件
         topSmartRefresh = view.findViewById(R.id.top_smart_refresh_layout);
 
+        // 下拉
+        // topSmartRefresh.setOnRefreshListener(refreshLayout -> {
+        //     refreshLayout.finishRefresh(true);// 传入false 表示刷新失败
+        // });
+
         topSmartRefresh.setOnRefreshListener(refreshLayout -> {
-            refreshLayout.finishRefresh(true);// 传入false 表示刷新失败
+            // 再次请求
+            // List<NewsItem> latestNews = JsonUtils.parseNewsJsonByLocal(getContext(), "top_2025_06_05.json");
+            List<NewsItem> latestNews = JsonUtils.parseNewsJsonByRequest("top");
+
+            if (latestNews != null && !latestNews.isEmpty()) {
+                topNewsList.clear(); // 清空旧数据
+                topNewsList.addAll(latestNews); // 添加新数据
+                topMyAdapter.notifyDataSetChanged(); // 通知适配器刷新
+
+                Toast.makeText(getContext(), "刷新成功", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(getContext(), "刷新失败，请检查网络", Toast.LENGTH_SHORT).show();
+            }
+
+            refreshLayout.finishRefresh(true);
         });
 
+        // topSmartRefresh.setOnRefreshListener(refreshLayout -> {
+        //     new Thread(() -> {
+        //         // 发起网络请求（在子线程中）
+        //         List<NewsItem> latestNews = JsonUtils.parseNewsJsonByLocal(getContext(), "top_2025_06_05.json");
+        //
+        //         // 切换回主线程更新 UI
+        //         requireActivity().runOnUiThread(() -> {
+        //             if (latestNews != null && !latestNews.isEmpty()) {
+        //                 topNewsList.clear(); // 清空旧数据
+        //                 topNewsList.addAll(latestNews); // 添加新数据
+        //                 topMyAdapter.notifyDataSetChanged(); // 通知适配器刷新
+        //
+        //                 Toast.makeText(getContext(), "刷新成功", Toast.LENGTH_SHORT).show();
+        //             } else {
+        //                 Toast.makeText(getContext(), "刷新失败，请检查网络", Toast.LENGTH_SHORT).show();
+        //             }
+        //
+        //             refreshLayout.finishRefresh(true);
+        //         });
+        //     }).start();
+        // });
+
+        // 上拉
         topSmartRefresh.setOnLoadMoreListener(refreshLayout -> {
             Toast.makeText(getContext(), "加载中...", Toast.LENGTH_SHORT).show();
 

@@ -3,37 +3,78 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="3dp"
-    android:background="@color/gray"
-    android:padding="20dp">
+    android:background="@color/white"
+    android:padding="@dimen/more_tabs_margin_size">
 
-    <TextView
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/quanbubiaoqian"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
-        android:text="全部标签"
-        android:textSize="@dimen/tabLayoutTextSize"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageButton
-        android:id="@+id/more_tabs_cancel"
-        android:layout_width="50dp"
         android:layout_height="50dp"
-        android:background="@color/white"
-        android:contentDescription="取消按钮"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="全部分类"
+            android:textSize="@dimen/larger_text_ize"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageButton
+            android:id="@+id/more_tabs_cancel"
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="end"
+            android:background="#00000000"
+            android:contentDescription="取消按钮"
+            android:src="@drawable/more_tabs_cancel"
+            app:layout_constraintEnd_toEndOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <TextView
+        android:id="@+id/wodebiaoqian"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="我的标签"
-        android:textSize="@dimen/new_info_size"
+        android:layout_marginTop="15dp"
+        android:text="我的分类"
+        android:textSize="@dimen/normal_text_ize"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/quanbubiaoqian" />
 
+    <GridView
+        android:id="@+id/my_tabs_grid_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:numColumns="4"
+        android:verticalSpacing="20dp"
+        app:layout_constraintTop_toBottomOf="@id/wodebiaoqian" />
+
+
+    <TextView
+        android:id="@+id/qitafenlei"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+
+        android:text="其他分类"
+        android:textSize="@dimen/normal_text_ize"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/my_tabs_grid_view" />
+
+    <GridView
+        android:id="@+id/other_tabs_grid_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:numColumns="4"
+        android:verticalSpacing="20dp"
+        app:layout_constraintTop_toBottomOf="@id/qitafenlei" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

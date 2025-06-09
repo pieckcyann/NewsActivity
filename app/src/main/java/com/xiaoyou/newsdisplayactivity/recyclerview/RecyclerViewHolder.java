@@ -1,5 +1,6 @@
 package com.xiaoyou.newsdisplayactivity.recyclerview;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -12,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.xiaoyou.newsdisplayactivity.R;
-import com.xiaoyou.newsdisplayactivity.bean.NewsItem;
+import com.xiaoyou.newsdisplayactivity.dto.NewsItem;
 
 public class RecyclerViewHolder extends RecyclerView.ViewHolder {
     TextView mTitleTv;
@@ -38,6 +39,7 @@ public class RecyclerViewHolder extends RecyclerView.ViewHolder {
 
     }
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     public void bindImageData(NewsItem item, Context context) {
         // 绑定前先清除
         resetImageData();
@@ -60,13 +62,16 @@ public class RecyclerViewHolder extends RecyclerView.ViewHolder {
 
             Glide.with(context)
                     .load(imageUrl3)  // 网络图片地址
-                    .into(image3);
+                    .into(image3)
+                    .onLoadFailed(context.getDrawable(R.drawable.image_load_failed));
             Glide.with(context)
                     .load(imageUrl2)  // 网络图片地址
-                    .into(image2);
+                    .into(image2)
+                    .onLoadFailed(context.getDrawable(R.drawable.image_load_failed));
             Glide.with(context)
                     .load(imageUrl1)  // 网络图片地址
-                    .into(image1);
+                    .into(image1)
+                    .onLoadFailed(context.getDrawable(R.drawable.image_load_failed));
 
             tree_image_container.setVisibility(View.VISIBLE);
             multi_image_container.setVisibility(View.VISIBLE);
@@ -78,10 +83,12 @@ public class RecyclerViewHolder extends RecyclerView.ViewHolder {
 
             Glide.with(context)
                     .load(imageUrl2)  // 网络图片地址
-                    .into(image2);
+                    .into(image2)
+                    .onLoadFailed(context.getDrawable(R.drawable.image_load_failed));
             Glide.with(context)
                     .load(imageUrl1)  // 网络图片地址
-                    .into(image1);
+                    .into(image1)
+                    .onLoadFailed(context.getDrawable(R.drawable.image_load_failed));
 
             // image1.setOnClickListener(v -> {
             //     // Toast.makeText(context, imageUrl2, Toast.LENGTH_LONG).show();
@@ -103,7 +110,8 @@ public class RecyclerViewHolder extends RecyclerView.ViewHolder {
 
             Glide.with(context)
                     .load(imageUrl1)  // 网络图片地址
-                    .into(image1);
+                    .into(image1)
+                    .onLoadFailed(context.getDrawable(R.drawable.image_load_failed));
             image1.setVisibility(View.VISIBLE);
         }
     }
@@ -117,11 +125,12 @@ public class RecyclerViewHolder extends RecyclerView.ViewHolder {
         tree_image_container.setVisibility(View.GONE);
 
         // 也可以清除图片
-        if (image1 != null) image1.setImageDrawable(null);
+        if (image1 != null) {
+            image1.setVisibility(View.GONE); // !
+            image1.setImageDrawable(null);
+        }
         if (image2 != null) image2.setImageDrawable(null);
         if (image3 != null) image3.setImageDrawable(null);
-
-
     }
 
 }
