@@ -54,27 +54,38 @@ public class RecyclerViewHolder extends RecyclerView.ViewHolder {
 
         // 判空 + 判是否为空字符串，避免崩溃
         if (imageUrl3 != null && !imageUrl3.isEmpty()) {
-            System.out.println(imageUrl3);
-
             image1 = tree_image_container.findViewById(R.id.tree_image1);
             image2 = tree_image_container.findViewById(R.id.tree_image2);
             image3 = tree_image_container.findViewById(R.id.tree_image3);
 
             Glide.with(context)
                     .load(imageUrl3)  // 网络图片地址
-                    .into(image3)
-                    .onLoadFailed(context.getDrawable(R.drawable.image_load_failed));
+                    .into(image3);
             Glide.with(context)
                     .load(imageUrl2)  // 网络图片地址
-                    .into(image2)
-                    .onLoadFailed(context.getDrawable(R.drawable.image_load_failed));
+                    .into(image2);
             Glide.with(context)
                     .load(imageUrl1)  // 网络图片地址
-                    .into(image1)
-                    .onLoadFailed(context.getDrawable(R.drawable.image_load_failed));
+                    .into(image1);
 
-            tree_image_container.setVisibility(View.VISIBLE);
             multi_image_container.setVisibility(View.VISIBLE);
+            tree_image_container.setVisibility(View.VISIBLE);
+
+            image1.setOnClickListener(v -> {
+                // Toast.makeText(context, imageUrl2, Toast.LENGTH_LONG).show();
+                System.out.println("三张图的第一张：" + imageUrl1);
+            });
+
+            image2.setOnClickListener(v -> {
+                // Toast.makeText(context, imageUrl2, Toast.LENGTH_LONG).show();
+                System.out.println("三张图的第二张：" + imageUrl2);
+            });
+
+            image3.setOnClickListener(v -> {
+                // Toast.makeText(context, imageUrl2, Toast.LENGTH_LONG).show();
+                System.out.println("三张图的第三张：" + imageUrl3);
+            });
+
             return;
         }
         if (imageUrl2 != null && !imageUrl2.isEmpty()) {
@@ -83,54 +94,65 @@ public class RecyclerViewHolder extends RecyclerView.ViewHolder {
 
             Glide.with(context)
                     .load(imageUrl2)  // 网络图片地址
-                    .into(image2)
-                    .onLoadFailed(context.getDrawable(R.drawable.image_load_failed));
+                    .into(image2);
             Glide.with(context)
                     .load(imageUrl1)  // 网络图片地址
-                    .into(image1)
-                    .onLoadFailed(context.getDrawable(R.drawable.image_load_failed));
+                    .into(image1);
 
-            // image1.setOnClickListener(v -> {
-            //     // Toast.makeText(context, imageUrl2, Toast.LENGTH_LONG).show();
-            //     System.out.println(imageUrl1);
-            // });
-            //
-            // image2.setOnClickListener(v -> {
-            //     // Toast.makeText(context, imageUrl2, Toast.LENGTH_LONG).show();
-            //     System.out.println(imageUrl2);
-            // });
-
-            two_image_container.setVisibility(View.VISIBLE);
             multi_image_container.setVisibility(View.VISIBLE);
+            two_image_container.setVisibility(View.VISIBLE);
+
+            image1.setOnClickListener(v -> {
+                // Toast.makeText(context, imageUrl2, Toast.LENGTH_LONG).show();
+                System.out.println("两张图的第一张：" + imageUrl1);
+            });
+
+            image2.setOnClickListener(v -> {
+                // Toast.makeText(context, imageUrl2, Toast.LENGTH_LONG).show();
+                System.out.println("两张图的第二张：" + imageUrl2);
+            });
+
             return;
         }
-        if (imageUrl1 != null && !imageUrl1.isEmpty()) {
-            image1 = itemView.findViewById(R.id.one_image1);
 
+        if (imageUrl1 != null && !imageUrl1.isEmpty()) {
+            System.out.println(!imageUrl1.isEmpty());
+            image1 = itemView.findViewById(R.id.one_image1);
 
             Glide.with(context)
                     .load(imageUrl1)  // 网络图片地址
-                    .into(image1)
-                    .onLoadFailed(context.getDrawable(R.drawable.image_load_failed));
+                    .into(image1);
+            // .onLoadFailed(context.getDrawable(R.drawable.image_load_failed));
             image1.setVisibility(View.VISIBLE);
+
+            image1.setOnClickListener(v -> {
+                // Toast.makeText(context, imageUrl2, Toast.LENGTH_LONG).show();
+                System.out.println("一张图：" + imageUrl1);
+            });
+            System.out.println(!imageUrl1.isEmpty());
         }
     }
 
     // 解决 RecyclerView 多次滚动多次绑定数据 (导致布局混乱) 的问题
 
     public void resetImageData() {
-        // 隐藏所有图片视图
+        // 避免错误地删除多图控件中的第一张图片
+        // if (multi_image_container.getVisibility() == View.GONE && image1 != null) {
+        // if (image3 == null && image1 != null) {
+        if (image3 == null && image2 == null && image1 != null) image1.setVisibility(View.GONE);
+        if (image3 == null && image2 == null && image1 != null) {
+            image1.setVisibility(View.GONE); // !
+            image1.setImageDrawable(null);
+        }
+
         multi_image_container.setVisibility(View.GONE);
         two_image_container.setVisibility(View.GONE);
         tree_image_container.setVisibility(View.GONE);
 
-        // 也可以清除图片
-        if (image1 != null) {
-            image1.setVisibility(View.GONE); // !
-            image1.setImageDrawable(null);
-        }
+
         if (image2 != null) image2.setImageDrawable(null);
         if (image3 != null) image3.setImageDrawable(null);
+
     }
 
 }

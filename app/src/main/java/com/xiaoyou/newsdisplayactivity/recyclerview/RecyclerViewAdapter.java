@@ -40,7 +40,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewHolder
         holder.mTitleTv.setText(news.getTitle());
         holder.mTitleAuthor.setText(news.getAuthor_name());
         holder.mTitleDate.setText(news.getDate());
-
         holder.bindImageData(news, this.context); // 数据绑定交给 ViewHolder 处理
     }
 

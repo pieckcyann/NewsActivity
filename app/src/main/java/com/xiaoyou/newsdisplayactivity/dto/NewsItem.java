@@ -1,5 +1,6 @@
 package com.xiaoyou.newsdisplayactivity.dto;
 
+import org.json.JSONObject;
 
 public class NewsItem {
     private String uniquekey;
@@ -12,6 +13,24 @@ public class NewsItem {
     private String thumbnail_pic_s02;
     private String thumbnail_pic_s03;
     private String is_content;
+
+    // 无参构造函数
+    public NewsItem() {
+    }
+
+    // 带 JSONObject 构造函数
+    public NewsItem(JSONObject newsJson) {
+        this.uniquekey = newsJson.optString("uniquekey");
+        this.title = newsJson.optString("title");
+        this.date = newsJson.optString("date");
+        this.category = newsJson.optString("category");
+        this.author_name = newsJson.optString("author_name");
+        this.url = newsJson.optString("url");
+        this.thumbnail_pic_s = newsJson.optString("thumbnail_pic_s");
+        this.thumbnail_pic_s02 = newsJson.optString("thumbnail_pic_s02");
+        this.thumbnail_pic_s03 = newsJson.optString("thumbnail_pic_s03");
+        this.is_content = newsJson.optString("is_content");
+    }
 
     // 提供必要的 getter 方法
     public String getUniquekey() {
