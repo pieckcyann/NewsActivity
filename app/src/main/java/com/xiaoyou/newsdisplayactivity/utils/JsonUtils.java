@@ -8,11 +8,8 @@ import com.xiaoyou.newsdisplayactivity.dto.NewsItem;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -116,45 +113,28 @@ public class JsonUtils {
         return Collections.emptyList();
     }
 
-    public static List<NewsItem> parseNewsJsonByRequest(String newsType) {
-        // 创建用于存放新闻数据的列表
+    public static List<NewsItem> parseNewsJsonByRequest(String newsType, int start, int count) {
         List<NewsItem> newsList = new ArrayList<>();
 
-        // 拼接 API 请求 URL，指定新闻类型、分页等参数
+        // 从第 start 条开始，获取 count 条
+        int page = start / count + 1; // 页数
         String apiUrl = "http://v.juhe.cn/toutiao/index"
                 + "?type=" + newsType
-                + "&page=1&page_size=7&is_filter=0"
-                + "&key=cb53bd41a74ef445a2d1b7fcfebe6fa0";
+                + "&page=" + page
+                + "&page_size=" + count
+                + "&is_filter=0"
+                // + "&key=cb53bd41a74ef445a2d1b7fcfebe6fa0";
+                + "&key=daab40e74fcad7df5190280e41618cb2";
 
-        HttpURLConnection connection = null;
-        BufferedReader reader = null;
+        // 通用请求方法获取 JSON 数据
+        String jsonResponse = HttpUtils.makeHttpRequest(apiUrl);
 
-        try {
-            // 创建 URL 对象并打开连接
-            URL url = new URL(apiUrl);
-            connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("GET");       // 设置请求方法为 GET
-            connection.setConnectTimeout(8000);       // 设置连接超时时间（毫秒）
-            connection.setReadTimeout(8000);          // 设置读取超时时间（毫秒）
-
-            // 获取响应码并判断是否成功
-            int responseCode = connection.getResponseCode();
-            if (responseCode == HttpURLConnection.HTTP_OK) {
-                // 使用 BufferedReader 读取服务器返回的数据
-                reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-                StringBuilder jsonBuilder = new StringBuilder();
-                String line;
-
-                // 按行读取 JSON 字符串
-                while ((line = reader.readLine()) != null) {
-                    jsonBuilder.append(line);
-                }
-
+        if (jsonResponse != null) {
+            try {
                 // 将 JSON 字符串转换为 JSONObject
-                String json = jsonBuilder.toString();
-                JSONObject rootObject = new JSONObject(json);
+                JSONObject rootObject = new JSONObject(jsonResponse);
 
-                // 判断是否成功获取数据（error_code == 0 表示成功）
+                // 判断是否成功获取数据 (error_code == 0 表示成功)
                 if (rootObject.optInt("error_code") == 0) {
                     // 提取 result 对象
                     JSONObject resultObject = rootObject.optJSONObject("result");
@@ -182,21 +162,12 @@ public class JsonUtils {
                         }
                     }
                 }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-
-        } catch (Exception e) {
-            // 捕获并打印异常
-            e.printStackTrace();
-        } finally {
-            // 关闭资源，避免内存泄漏
-            try {
-                if (reader != null) reader.close();
-                if (connection != null) connection.disconnect();
-            } catch (Exception ignored) {}
         }
 
-        // 返回解析后的新闻列表
-        return newsList;
+        return newsList; // 返回解析后的新闻列表
     }
 
     // public static List<NewsItem> parseNewsJsonByRequest(String newsType) {

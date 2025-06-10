@@ -29,6 +29,9 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+    buildFeatures {
+        viewBinding = true
+    }
 }
 // sourceSets {
 //    getByName("main") {
@@ -76,17 +79,21 @@ dependencies {
     // // OkHttp
     // implementation("com.squareup.okhttp3:okhttp:4.12.0")
 
-
-    // 下拉刷新，上拉加载更多
+    // 下拉刷新，上拉加载
     // https://github.com/scwang90/SmartRefreshLayout
     implementation(libs.refresh.layout.kernel)      // 核心必须依赖
     implementation(libs.refresh.header.classics)    // 经典刷新头
     implementation(libs.refresh.footer.classics)    // 经典加载
 
+    // 网页视图
+    implementation(libs.webkit)
+
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.activity)
     implementation(libs.constraintlayout)
+    implementation(libs.navigation.fragment)
+    implementation(libs.navigation.ui)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)

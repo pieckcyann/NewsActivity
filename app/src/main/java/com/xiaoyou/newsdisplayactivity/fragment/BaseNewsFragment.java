@@ -21,12 +21,11 @@ import java.util.List;
 
 public class BaseNewsFragment extends Fragment {
     private static final String ARG_NEWS_TYPE = "news_type";
-
+    private final int pageStep = 3;
     private String newsType;
     private RecyclerView recyclerView;
     private RecyclerViewAdapter adapter; // 接收返回的适配器，用于之后更新列表视图
     private List<NewsItem> newsList;
-    private int pageStap = 3;
     private int currentPage = 0; // 当前加载的页数
     private SmartRefreshLayout smartRefreshLayout;
 
@@ -59,72 +58,86 @@ public class BaseNewsFragment extends Fragment {
         smartRefreshLayout = view.findViewById(R.id.fragment_smart_refresh_layout_common);
 
         // 初始加载新闻
-        loadInitialNews();
+        loadNewsData("loadInitial", null);
 
         // 下拉刷新 监听器
         smartRefreshLayout.setOnRefreshListener(refreshLayout -> {
-            loadNewData(smartRefreshLayout);
+            loadNewsData("loadNew", smartRefreshLayout);
         });
 
         // 上拉加载 监听器
         smartRefreshLayout.setOnLoadMoreListener(refreshLayout -> {
-            loadMoreData(smartRefreshLayout);
+            loadNewsData("loadMore", smartRefreshLayout);
         });
     }
 
-    private void loadInitialNews() {
+    @SuppressLint("NotifyDataSetChanged")
+    private void loadNewsData(String actionType, SmartRefreshLayout refreshLayout) {
+        // 创建子线程用于执行耗时操作，避免堵塞主线程
         new Thread(() -> {
-            List<NewsItem> currentNews = JsonUtils.parseNewsJsonByLocal(getContext(), newsType + "_2025_06_06.json", 0, pageStap);
+            List<NewsItem> resultNews = null;
 
-            requireActivity().runOnUiThread(() -> {
-                if (currentNews != null && !currentNews.isEmpty()) {
-                    newsList = currentNews;
+            // 处理不同的 actionType
+            if (actionType.equals("loadInitial")) {
+                // resultNews = JsonUtils.parseNewsJsonByLocal(getContext(), newsType + "_2025_06_05.json", 0, pageStep);
+                resultNews = JsonUtils.parseNewsJsonByRequest(newsType, 0, pageStep);
+            } else if (actionType.equals("loadNew")) {
+                currentPage = 0;
+                // resultNews = JsonUtils.parseNewsJsonByLocal(getContext(), newsType + "_2025_06_05.json", 0, pageStep);
+                resultNews = JsonUtils.parseNewsJsonByRequest(newsType, 0, pageStep);
+            } else if (actionType.equals("loadMore")) {
+                currentPage += pageStep;
+                // resultNews = JsonUtils.parseNewsJsonByLocal(getContext(), newsType + "_2025_06_05.json", currentPage, pageStep);
+                resultNews = JsonUtils.parseNewsJsonByRequest(newsType, currentPage += pageStep, pageStep);
+            }
 
-                    // 设置 RecyclerView 适配器
-                    adapter = new RecyclerViewAdapter(newsList, getContext());
-                    recyclerView.setAdapter(adapter);
-                    // 设置 RecyclerView 管理器
-                    recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-                } else {
-                    Toast.makeText(getContext(), "加载失败", Toast.LENGTH_SHORT).show();
+            // For lambda
+            List<NewsItem> finalResultNews = resultNews;
+
+            // 请求数据的子线程执行完要更新 UI 时，必须要返回到主线程来更新
+            requireActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    // () -> {
+                    if (finalResultNews != null && !finalResultNews.isEmpty()) {
+                        if (actionType.equals("loadInitial")) {
+                            newsList = finalResultNews;  // 初始加载
+
+                            // 添加适配器，负责新闻项的渲染绑定
+                            adapter = new RecyclerViewAdapter(newsList, getContext());
+                            recyclerView.setAdapter(adapter);
+                            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+                        } else if (actionType.equals("loadNew")) {
+                            newsList.clear();  // 清空现有数据
+                            newsList.addAll(finalResultNews);  // 添加新数据
+                            adapter.notifyDataSetChanged();
+                            Toast.makeText(getContext(), "刷新成功！", Toast.LENGTH_SHORT).show();
+                        } else { // "loadMore"
+                            newsList.addAll(finalResultNews);  // 追加新数据
+                            adapter.notifyDataSetChanged();
+                            Toast.makeText(getContext(), "加载成功！", Toast.LENGTH_SHORT).show();
+                        }
+                    } else {
+                        if (actionType.equals("loadNew")) {
+                            Toast.makeText(getContext(), "刷新失败。。。", Toast.LENGTH_SHORT).show();
+                        } else if (actionType.equals("loadMore")) {
+                            Toast.makeText(getContext(), "没有更多新闻了！", Toast.LENGTH_SHORT).show();
+                        } else { // "loadInitial"
+                            Toast.makeText(getContext(), "加载失败", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    if (refreshLayout != null) {
+                        if (actionType.equals("loadNew")) {
+                            refreshLayout.finishRefresh(true);
+                        } else if (actionType.equals("loadMore")) {
+                            refreshLayout.finishLoadMore(true);
+                        }
+                    }
+                    // }
                 }
             });
         }).start();
     }
 
-    private void loadNewData(SmartRefreshLayout refreshLayout) {
-        new Thread(() -> {
-            List<NewsItem> latestNews = JsonUtils.parseNewsJsonByLocal(getContext(), newsType + "_2025_06_06.json", 0, currentPage + pageStap);
-
-            requireActivity().runOnUiThread(() -> {
-                if (!latestNews.isEmpty()) {
-                    newsList.clear();  // 清空现有数据
-                    newsList.addAll(latestNews);  // 添加最新的新闻数据
-                    adapter.notifyDataSetChanged();
-                    Toast.makeText(getContext(), "刷新成功！", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(getContext(), "刷新失败。。。", Toast.LENGTH_SHORT).show();
-                }
-                refreshLayout.finishRefresh(true);
-            });
-        }).start();
-    }
-
-    private void loadMoreData(SmartRefreshLayout refreshLayout) {
-        new Thread(() -> {
-            List<NewsItem> moreNews = JsonUtils.parseNewsJsonByLocal(getContext(), newsType + "_2025_06_06.json", currentPage += 3, pageStap);
-
-            requireActivity().runOnUiThread(() -> {
-                if (!moreNews.isEmpty()) {
-                    newsList.addAll(moreNews);  // 追加数据到已有列表
-                    adapter.notifyDataSetChanged();
-                    Toast.makeText(getContext(), "加载成功！", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(getContext(), "没有更多新闻了！", Toast.LENGTH_SHORT).show();
-                }
-                refreshLayout.finishLoadMore(true);
-                // refreshLayout.finishLoadMoreWithNoMoreData();
-            });
-        }).start();
-    }
 }

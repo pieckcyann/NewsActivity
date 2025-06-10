@@ -15,7 +15,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.util.LinkedList;
 
 public class MoreTabsActivity extends AppCompatActivity {
-    NewsApp appState;
     LinkedList<String> myTabs;
     LinkedList<String> otherTabs;
     GridView myTabsGridView, otherTabsGridView;
@@ -26,18 +25,19 @@ public class MoreTabsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_more_tabs);
 
+        // 推出按钮
         findViewById(R.id.more_tabs_cancel).setOnClickListener(v -> {
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
+            finish(); // 关闭
         });
 
         myTabsGridView = findViewById(R.id.my_tabs_grid_view);
         otherTabsGridView = findViewById(R.id.other_tabs_grid_view);
 
         // 如果不在这里初始化会报 NPE
-        appState = (NewsApp) getApplicationContext();
-        myTabs = appState.getMyTabsState();
-        otherTabs = appState.getOhterTabsState();
+        myTabs = NewsTabItems.loadMyTabState(this);
+        otherTabs = NewsTabItems.loadOtherTabState(this);
 
         // 创建出动画
         Animation outAnim = AnimationUtils.loadAnimation(MoreTabsActivity.this, R.anim.item_out);
@@ -83,10 +83,10 @@ public class MoreTabsActivity extends AppCompatActivity {
                         @Override
                         public void onAnimationEnd(Animation animation) {
                             // 保存删除的分类
-                            String removedTabItem = appState.getMyTabsState(position);
+                            String removedTabItem = NewsTabItems.getMyTabsState(position);
 
-                            appState.removeMyTabsState(position); // 删除
-                            appState.addOtherTabsState(removedTabItem); // 添加
+                            NewsTabItems.removeMyTabsState(position, MoreTabsActivity.this); // 删除
+                            NewsTabItems.addOtherTabsState(removedTabItem, MoreTabsActivity.this); // 添加
 
                             // 通知更新
                             myTabsAdapter.notifyDataSetChanged();
@@ -94,7 +94,7 @@ public class MoreTabsActivity extends AppCompatActivity {
 
                             // 等待 GridView 刷新完成，再播放入动画
                             otherTabsGridView.post(() -> {
-                                int lastIndex = appState.sizeOtherTabsState() - 1;
+                                int lastIndex = NewsTabItems.sizeOtherTabsState() - 1;
                                 View lastView = otherTabsGridView.getChildAt(lastIndex);
                                 if (lastView != null) {
                                     lastView.startAnimation(inAnim);
@@ -112,7 +112,6 @@ public class MoreTabsActivity extends AppCompatActivity {
                 return convertView;
             }
         };
-
 
         myTabsGridView.setAdapter(myTabsAdapter);
 
@@ -155,11 +154,10 @@ public class MoreTabsActivity extends AppCompatActivity {
                         @Override
                         public void onAnimationEnd(Animation animation) {
                             // 保存删除的分类
-                            String removedTabItem = appState.getOtherTabsState(position);
+                            String removedTabItem = NewsTabItems.getOtherTabsState(position);
 
-
-                            appState.removeOtherTabsState(position); // 删除
-                            appState.addMyTabsState(removedTabItem); // 添加
+                            NewsTabItems.removeOtherTabsState(position, MoreTabsActivity.this); // 删除
+                            NewsTabItems.addMyTabsState(removedTabItem, MoreTabsActivity.this); // 添加
 
                             // 通知更新
                             otherTabsAdapter.notifyDataSetChanged();
@@ -167,7 +165,7 @@ public class MoreTabsActivity extends AppCompatActivity {
 
                             // 等待 GridView 刷新完成，再播放入动画
                             myTabsGridView.post(() -> {
-                                int lastIndex = appState.sizeMyTabsState() - 1;
+                                int lastIndex = NewsTabItems.sizeMyTabsState() - 1;
                                 View lastView = myTabsGridView.getChildAt(lastIndex);
 
                                 if (lastView != null) {

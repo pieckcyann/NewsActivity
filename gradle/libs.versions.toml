@@ -17,6 +17,9 @@ materialVersion = "1.12.0"
 okhttp = "3.14.1"
 recyclerview = "1.4.0"
 refreshHeaderClassics = "2.1.0"
+webkit = "1.8.0"
+navigationFragment = "2.6.0"
+navigationUi = "2.6.0"
 
 [libraries]
 annotation = { module = "androidx.annotation:annotation", version.ref = "annotation" }
@@ -38,6 +41,9 @@ recyclerview = { module = "androidx.recyclerview:recyclerview", version.ref = "r
 refresh-footer-classics = { module = "io.github.scwang90:refresh-footer-classics", version.ref = "refreshHeaderClassics" }
 refresh-header-classics = { module = "io.github.scwang90:refresh-header-classics", version.ref = "refreshHeaderClassics" }
 refresh-layout-kernel = { module = "io.github.scwang90:refresh-layout-kernel", version.ref = "refreshHeaderClassics" }
+webkit = { module = "androidx.webkit:webkit", version.ref = "webkit" }
+navigation-fragment = { group = "androidx.navigation", name = "navigation-fragment", version.ref = "navigationFragment" }
+navigation-ui = { group = "androidx.navigation", name = "navigation-ui", version.ref = "navigationUi" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

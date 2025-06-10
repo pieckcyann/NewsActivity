@@ -16,26 +16,12 @@ import com.xiaoyou.newsdisplayactivity.fragment.BaseNewsFragment;
 import java.util.LinkedList;
 import java.util.List;
 
-// public class MainActivity extends AppCompatActivity {
-//
-//    @Override
-//    protected void onCreate(Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//        EdgeToEdge.enable(this);
-//        setContentView(R.layout.activity_main);
-//        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-//            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-//            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-//            return insets;
-//        });
-//    }
-//}
-
 public class MainActivity extends AppCompatActivity {
     // 标题内容列表
     LinkedList<String> myTabs;
     TabLayout tabLayout;
     ViewPager2 viewPager;
+
     // 动态地创建 Fragment 列表
     private List<Fragment> fragmentList;
 
@@ -49,8 +35,11 @@ public class MainActivity extends AppCompatActivity {
         tabLayout = findViewById(R.id.tab_layout);
         viewPager = findViewById(R.id.info_viewpager2);
 
-        // 从全局状态中获取标题文本列表
-        myTabs = ((NewsApp) getApplicationContext()).getMyTabsState();
+        // // 从全局状态中获取标题文本列表
+        // myTabs = NewsTabItems.getMyTabsState();
+
+        // 加载 myTab 数据
+        myTabs = NewsTabItems.loadMyTabState(this);
 
         // 动态地创建 Fragment 列表
         fragmentList = generateFragments();
@@ -59,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.btn_more_tags).setOnClickListener(v -> {
             Intent intent = new Intent(this, MoreTabsActivity.class);
             startActivity(intent);
+            finish(); // 关闭
         });
 
         // 添加 ViewPager 适配器

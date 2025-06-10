@@ -38,13 +38,13 @@ public class NewsItem {
     public List<String> getImageList() {
         List<String> imageList = new ArrayList<>();
         if (thumbnail_pic_s != null && !thumbnail_pic_s.isEmpty()) {
-            imageList.add(thumbnail_pic_s);
+            imageList.add(thumbnail_pic_s.replace("dftoutiao", "dfxwdc"));
         }
         if (thumbnail_pic_s02 != null && !thumbnail_pic_s02.isEmpty()) {
-            imageList.add(thumbnail_pic_s02);
+            imageList.add(thumbnail_pic_s02.replace("dftoutiao", "dfxwdc"));
         }
         if (thumbnail_pic_s03 != null && !thumbnail_pic_s03.isEmpty()) {
-            imageList.add(thumbnail_pic_s03);
+            imageList.add(thumbnail_pic_s03.replace("dftoutiao", "dfxwdc"));
         }
         return imageList;
     }

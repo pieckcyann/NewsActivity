@@ -1,9 +1,10 @@
 package com.xiaoyou.newsdisplayactivity.recyclerview;
 
+import static com.xiaoyou.newsdisplayactivity.utils.HttpUtils.loadUrlImage;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -11,7 +12,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
 import com.xiaoyou.newsdisplayactivity.R;
 
 import java.util.List;
@@ -57,9 +57,9 @@ public class RecyclerViewHolder extends RecyclerView.ViewHolder {
         int count = images.size();
 
         if (count >= 3) {
-            Glide.with(context).load(images.get(0)).into(three_image1);
-            Glide.with(context).load(images.get(1)).into(three_image2);
-            Glide.with(context).load(images.get(2)).into(three_image3);
+            loadUrlImage(context, images.get(0), three_image1);
+            loadUrlImage(context, images.get(1), three_image2);
+            loadUrlImage(context, images.get(2), three_image3);
 
             tree_image_container.setVisibility(View.VISIBLE);
 
@@ -67,33 +67,33 @@ public class RecyclerViewHolder extends RecyclerView.ViewHolder {
             three_image2.setVisibility(View.VISIBLE);
             three_image3.setVisibility(View.VISIBLE);
 
-            // image1.setOnClickListener(v -> System.out.println("三张图的第一张：" + images.get(0)));
-            // image2.setOnClickListener(v -> System.out.println("三张图的第二张：" + images.get(1)));
-            // image3.setOnClickListener(v -> System.out.println("三张图的第三张：" + images.get(2)));
+            // three_image1.setOnClickListener(v -> System.out.println("三张图的第一张：" + images.get(0)));
+            // three_image2.setOnClickListener(v -> System.out.println("三张图的第二张：" + images.get(1)));
+            // three_image3.setOnClickListener(v -> System.out.println("三张图的第三张：" + images.get(2)));
 
         } else if (count == 2) {
             two_image1 = two_image_container.findViewById(R.id.two_image1);
             two_image2 = two_image_container.findViewById(R.id.two_image2);
 
-            Glide.with(context).load(images.get(0)).into(two_image1);
-            Glide.with(context).load(images.get(1)).into(two_image2);
+            loadUrlImage(context, images.get(0), two_image1);
+            loadUrlImage(context, images.get(1), two_image2);
 
             two_image_container.setVisibility(View.VISIBLE);
 
             two_image1.setVisibility(View.VISIBLE);
             two_image2.setVisibility(View.VISIBLE);
 
-            // image1.setOnClickListener(v -> System.out.println("两张图的第一张：" + images.get(0)));
-            // image2.setOnClickListener(v -> System.out.println("两张图的第二张：" + images.get(1)));
+            // two_image1.setOnClickListener(v -> System.out.println("两张图的第一张：" + images.get(0)));
+            // two_image2.setOnClickListener(v -> System.out.println("两张图的第二张：" + images.get(1)));
 
         } else if (count == 1) {
             one_image1 = itemView.findViewById(R.id.one_image1);
 
-            Glide.with(context).load(images.get(0)).into(one_image1);
+            loadUrlImage(context, images.get(0), one_image1);
 
             one_image1.setVisibility(View.VISIBLE);
 
-            one_image1.setOnClickListener(v -> System.out.println("一张图：" + images.get(0)));
+            // one_image1.setOnClickListener(v -> System.out.println("一张图：" + images.get(0)));
         }
     }
 
